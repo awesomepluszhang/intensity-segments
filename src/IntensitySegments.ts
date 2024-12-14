@@ -15,6 +15,8 @@ export class IntensitySegments {
    * @public
    */
   add(from: Point, to: Point, amount: Intensity): IntensitySegments {
+    this.validateFromAndTo(from, to);
+    this.validateIntensity(amount);
     const fromIndex = this.insert(from);
     const toIndex = this.insert(to, fromIndex + 1);
 
@@ -37,6 +39,8 @@ export class IntensitySegments {
    * @public
    */
   set(from: Point, to: Point, amount: Intensity): IntensitySegments {
+    this.validateFromAndTo(from, to);
+    this.validateIntensity(amount);
     const fromIndex = this.insert(from, 0, false);
     const toIndex = this.insert(to, fromIndex + 1, false);
 
@@ -57,6 +61,38 @@ export class IntensitySegments {
   toString() {
     const result = this.points.map((point) => [point, this.segments.get(point)]);
     return JSON.stringify(result);
+  }
+
+  /**
+   * Validates from and to
+   * @throws {Error} If parameters are not numbers
+   * @throws {Error} If parameters are not finite numbers
+   * @throws {Error} If from >= to
+   */
+  private validateFromAndTo(from: Point, to: Point) {
+    if (typeof from !== 'number' || typeof to !== 'number') {
+      throw new Error('From and to must be numbers');
+    }
+    if (!Number.isFinite(from) || !Number.isFinite(to)) {
+      throw new Error('From and to must be finite numbers');
+    }
+    if (from >= to) {
+      throw new Error('From must greater than to');
+    }
+  }
+
+  /**
+   * Validates intensity
+   * @throws {Error} If intensity is a number
+   * @throws {Error} If intensity is not a finite number
+   */
+  private validateIntensity(intensity: Intensity) {
+    if (typeof intensity !== 'number') {
+      throw new Error('Intensity must be a number');
+    }
+    if (!Number.isFinite(intensity)) {
+      throw new Error('Intensity must be a finite number');
+    }
   }
 
   /**

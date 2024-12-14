@@ -68,4 +68,27 @@ describe('IntensitySegments', () => {
       expect(segments.toString()).toBe('[[10,-2],[40,0]]');
     });
   });
+
+  describe('set/add throwing errors', () => {
+    it('should throw error given from/to is infinity', () => {
+      const segments = new IntensitySegments();
+      expect(segments.toString()).toBe('[]');
+
+      expect(() => segments.set(-Infinity, Infinity, 1)).toThrow('From and to must be finite numbers');
+    });
+
+    it('should throw error given from > to', () => {
+      const segments = new IntensitySegments();
+      expect(segments.toString()).toBe('[]');
+
+      expect(() => segments.set(5, 2, 1)).toThrow('From must greater than to');
+    });
+
+    it('should throw error given intensity is infinity', () => {
+      const segments = new IntensitySegments();
+      expect(segments.toString()).toBe('[]');
+
+      expect(() => segments.set(10, 20, Infinity)).toThrow('Intensity must be a finite number');
+    });
+  });
 });
