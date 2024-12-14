@@ -36,9 +36,17 @@ export class IntensitySegments {
    * @returns the instance self
    * @public
    */
-  set(from: Point, to: Point, amount: Intensity) {
-    // TODO: implement this
-    console.log(from, to, amount);
+  set(from: Point, to: Point, amount: Intensity): IntensitySegments {
+    const fromIndex = this.insert(from, 0, false);
+    const toIndex = this.insert(to, fromIndex + 1, false);
+
+    for (let i = fromIndex; i < toIndex; i++) {
+      const point = this.points[i];
+      this.segments.set(point, amount);
+    }
+
+    this.removeUnnecessary(fromIndex, toIndex);
+    return this;
   }
 
   /**
@@ -80,10 +88,11 @@ export class IntensitySegments {
    * Insert the point to points and segments, and return the insertion index of the point
    * @param point - the point you want to insert
    * @param left - start index to calculate the insertion index
+   * @param isAdd - a flag to indicate whether this is a add call or not
    * @returns insertion index of the point
    * @internal
    */
-  private insert(point: Point, left: Intensity = 0) {
+  private insert(point: Point, left: Intensity = 0, isAdd: boolean = true): number {
     const index = this.searchFromPoints(point, left, this.points.length - 1);
     if (point !== this.points[index]) {
       // new point, insert to points at a correct index
@@ -92,7 +101,8 @@ export class IntensitySegments {
 
     if (!this.segments.has(point)) {
       // new point, calc and store the intensity of the point
-      this.segments.set(point, this.getIntensity(index));
+      const intensity = isAdd ? this.getIntensity(index) : 0;
+      this.segments.set(point, intensity);
     }
     return index;
   }
