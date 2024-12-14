@@ -1,5 +1,6 @@
 type Point = number;
 type Intensity = number;
+const INITIAL_INTENSITY = 0;
 
 export class IntensitySegments {
   // An array to store the points of the segments
@@ -128,7 +129,7 @@ export class IntensitySegments {
    * @returns insertion index of the point
    * @internal
    */
-  private insert(point: Point, left: Intensity = 0, isAdd: boolean = true): number {
+  private insert(point: Point, left: number = 0, isAdd: boolean = true): number {
     const index = this.searchFromPoints(point, left, this.points.length - 1);
     if (point !== this.points[index]) {
       // new point, insert to points at a correct index
@@ -137,7 +138,7 @@ export class IntensitySegments {
 
     if (!this.segments.has(point)) {
       // new point, calc and store the intensity of the point
-      const intensity = isAdd ? this.getIntensity(index) : 0;
+      const intensity = isAdd ? this.getIntensity(index) : INITIAL_INTENSITY;
       this.segments.set(point, intensity);
     }
     return index;
@@ -177,6 +178,6 @@ export class IntensitySegments {
       }
       cursor--;
     }
-    return 0;
+    return INITIAL_INTENSITY;
   }
 }
